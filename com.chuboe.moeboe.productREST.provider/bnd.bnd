@@ -1,22 +1,34 @@
 #
-#  RUN SPECIFICATION
+#  BUNDLE 
 #
 
 
-Bundle-Version:				1.0.0.${tstamp}
-Bundle-SymbolicName:		com.chuboe.moeboe.application.launch
-JPM-Command:					moeboe
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A bundle with a provider. Notice that this provider exports the API package. \
+	It also provides a JUnit test and it can be run standalone. \
+	\
+	${warning;Please update this Bundle-Description in com.chuboe.moeboe.productREST.provider/bnd.bnd}
+
+Private-Package:  \
+	com.chuboe.moeboe.productrest.provider
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	com.chuboe.moeboe.product.api;version=latest,\
+	com.chuboe.moeboe.productREST.api;version=latest
+	
+-testpath: \
+	osgi.enroute.junit.wrapper;version=4.12
+
+-includeresource: {readme.md}
 
 
--runfw:						org.eclipse.osgi
-
--runrequires: \
-	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.application)',\
+-runrequires:  \
 	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productREST.provider)'
-
+	
 -runbundles: \
 	aQute.open.store.mongo.provider;version='[1.0.0,1.0.1)',\
-	com.chuboe.moeboe.application;version=snapshot,\
 	com.chuboe.moeboe.product.provider;version=snapshot,\
 	com.chuboe.moeboe.productREST.provider;version=snapshot,\
 	org.apache.felix.configadmin;version='[1.8.6,1.8.7)',\
@@ -34,8 +46,9 @@ JPM-Command:					moeboe
 	osgi.enroute.configurer.simple.provider;version='[1.2.2,1.2.3)',\
 	osgi.enroute.dto.bndlib.provider;version='[1.0.0,1.0.1)',\
 	osgi.enroute.executor.simple.provider;version='[1.0.0,1.0.1)',\
-	osgi.enroute.google.angular.webresource;version='[1.4.4,1.4.5)',\
 	osgi.enroute.logger.simple.provider;version='[1.1.1,1.1.2)',\
 	osgi.enroute.rest.simple.provider;version='[2.0.2,2.0.3)',\
-	osgi.enroute.twitter.bootstrap.webresource;version='[3.3.5,3.3.6)',\
 	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)'
+Export-Package: \
+	com.chuboe.moeboe.product.api,\
+	com.chuboe.moeboe.productrest.api
