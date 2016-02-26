@@ -1,0 +1,4 @@
+-plugin.enroute.aqute = \
+  aQute.bnd.deployer.repository.FixedIndexedRepo; \
+    name        =       aQute; \
+    locations   =       https://raw.githubusercontent.com/pkriens/aQute.open/master/cnf/release/index.xml

@@ -1,0 +1,5 @@
+{
+ "revisionRefs":[{
+  "artifactId":"mongo-java-driver","baseline":"2.14.1","bsn":"org.mongodb.mongo-java-driver","created":1452712469000,"description":"The MongoDB Java driver","errors":1,"groupId":"org.mongodb","md5":"8555CD7888D99453F4C78411525A7F96","name":"MongoDB Java Driver","phase":"MASTER","revision":"B2436658CD66175F8EA3B2B8D13F8D16D82A403F","size":613266,"urls":["http://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/2.14.1/mongo-java-driver-2.14.1.jar"],"version":"2.14.1"
+ }]
+}
