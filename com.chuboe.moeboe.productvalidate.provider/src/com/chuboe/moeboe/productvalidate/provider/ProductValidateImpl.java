@@ -24,10 +24,7 @@ public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 		if (product.created == 0) {
 			product.created = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
 		}
-		if (product.updated == 0) {
-			product.updated = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
-		}
+		product.updated = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
 	}
-
 
 }

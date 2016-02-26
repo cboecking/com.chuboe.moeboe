@@ -1,14 +1,18 @@
 package com.chuboe.moeboe.product.provider;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.LogService;
 
 import com.chuboe.moeboe.product.api.Product;
 import com.chuboe.moeboe.product.api.ProductDTO;
+import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 
 import aQute.open.store.api.DB;
 import aQute.open.store.api.Store;
@@ -24,6 +28,23 @@ public class ProductImpl implements Product {
 	
 	@Reference
 	LogService log;
+	
+	//list of product validators
+	List<RecordValidate<ProductDTO>> validators = new CopyOnWriteArrayList<>();
+	
+	@Reference(
+			cardinality=ReferenceCardinality.MULTIPLE,
+			policy=ReferencePolicy.DYNAMIC
+		)
+	void addRecordValidate(RecordValidate<ProductDTO> rv) {
+		validators.add(rv);
+	}
+	
+	void removeRecordValidate(RecordValidate<ProductDTO> rv) {
+		validators.remove(rv);
+	}
+	//end -- list of product validators
+	
 
 	@Activate
 	void activate() throws Exception {
@@ -32,7 +53,7 @@ public class ProductImpl implements Product {
 		{
 			ProductDTO p = new ProductDTO();
 			p.name = "First Product";
-			p = store.insert(p);
+			p = save(p);
 			
 			//KP: logging with a lambda expression from a MongoDB stream
 			store.all().stream()
@@ -42,11 +63,16 @@ public class ProductImpl implements Product {
 			store.all().stream()
 				.forEach(lam -> System.out.println(lam._id + "::" + lam.name));
 		}
-	}
+	} //activate
 	
 	@Override
 	public ProductDTO save(ProductDTO product) throws Exception {
 		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
+		
+		for(RecordValidate<ProductDTO> rv: validators) {
+			rv.validate(product);
+		}
+		
 		return store.insert(product);
 	}
 
