@@ -5,6 +5,7 @@ import java.util.List;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.log.LogService;
 
 import com.chuboe.moeboe.product.api.Product;
 import com.chuboe.moeboe.product.api.ProductDTO;
@@ -21,6 +22,9 @@ public class ProductImpl implements Product {
 	@Reference
 	DB db;
 	
+	@Reference
+	LogService log;
+
 	@Activate
 	void activate() throws Exception {
 		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
@@ -30,8 +34,11 @@ public class ProductImpl implements Product {
 			p.name = "First Product";
 			p = store.insert(p);
 			
-			//TODO implement writing to log instead of system.out
-			store.all().forEach(System.out::println);
+			//KP: logging with a lambda expression from a MongoDB stream
+			store.all().stream()
+				.forEach(lam -> log.log(LogService.LOG_INFO, "Activate Product -> Create first entry: _id = " +lam._id+ "; Name = " + lam.name));
+			store.all().stream()
+				.forEach(lam -> System.out.println(lam._id + "::" + lam.name));
 		}
 	}
 	
