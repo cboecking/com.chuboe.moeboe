@@ -50,7 +50,7 @@ public class ProductImpl implements Product {
 	@Override
 	public List<ProductDTO> list(String filter) throws Exception {
 		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
-		return store.find((filter == null || filter.isEmpty()) ? "_id=*" : filter).collect();
+		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).collect();
 	}
 
 	@Override

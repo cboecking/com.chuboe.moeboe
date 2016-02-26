@@ -1,0 +1,12 @@
+#
+# MOEBOE APPLICATION DEBUG RUN SPECIFICATION
+#
+
+-include: ~com.chuboe.moeboe.bndrun
+
+-runrequires.debug:  ${debug-bundles}
+
+-runtrace: true
+
+-runbundles: \
+	${error;Resolve first}
