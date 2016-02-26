@@ -53,6 +53,7 @@ public class ProductImpl implements Product {
 	@Override
 	public ProductDTO find(String _id) throws Exception {
 		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
+		//TODO ask Peter about how to handle when no result found - .get() throws NoSuchElementException 
 		return store.find("_id="+_id).one().get();
 	}
 
