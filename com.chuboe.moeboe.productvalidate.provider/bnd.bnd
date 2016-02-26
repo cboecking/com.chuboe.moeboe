@@ -1,0 +1,32 @@
+#
+#  BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A bundle with a provider. Notice that this provider exports the API package. \
+	It also provides a JUnit test and it can be run standalone. \
+	\
+	${warning;Please update this Bundle-Description in com.chuboe.moeboe.productvalidate.provider/bnd.bnd}
+
+Private-Package:  \
+	com.chuboe.moeboe.productvalidate.provider
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	com.chuboe.moeboe.recordvalidate.api;version=latest,\
+	com.chuboe.moeboe.product.api;version=latest
+	
+-testpath: \
+	osgi.enroute.junit.wrapper;version=4.12
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productvalidate.provider)'
+	
+-runbundles: \
+	${error;Resolve first}
+Export-Package: com.chuboe.moeboe.recordvalidate.api
