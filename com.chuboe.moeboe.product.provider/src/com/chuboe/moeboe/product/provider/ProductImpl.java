@@ -37,7 +37,7 @@ public class ProductImpl implements Product {
 			//KP: logging with a lambda expression from a MongoDB stream
 			store.all().stream()
 				.forEach(lam -> log.log(LogService.LOG_INFO, "Activate Product -> Create first entry: _id = " +lam._id+ "; Name = " + lam.name));
-			//to view logs: enter help log in the console (gogo-shell -> gogo command)
+			//to view logs: enter "help log" in the console (assuming gogo-shell and gogo command are installed)
 			
 			store.all().stream()
 				.forEach(lam -> System.out.println(lam._id + "::" + lam.name));
