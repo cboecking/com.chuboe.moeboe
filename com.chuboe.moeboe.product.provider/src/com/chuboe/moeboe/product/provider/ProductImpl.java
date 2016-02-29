@@ -10,6 +10,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.LogService;
 
+import com.chuboe.moeboe.po.api.PO;
 import com.chuboe.moeboe.product.api.Product;
 import com.chuboe.moeboe.product.api.ProductDTO;
 import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
@@ -29,12 +30,21 @@ public class ProductImpl implements Product {
 	@Reference
 	LogService log;
 	
-	//list of product validators
+	//TEST - can we abstract base logic to a generic class/service - shared between all CRUD entities?
+	@Reference
+	PO<ProductDTO> po;
+	
+	Store<ProductDTO> store;
+	
+	//begin -- list of product validators
 	List<RecordValidate<ProductDTO>> validators = new CopyOnWriteArrayList<>();
 	
+	//KP: (key point) reference or call on multiple services
+	//KP: limit reference to a given target type. i.e. "ProductDTO"
 	@Reference(
 			cardinality=ReferenceCardinality.MULTIPLE,
-			policy=ReferencePolicy.DYNAMIC
+			policy=ReferencePolicy.DYNAMIC,
+			target="(validateDTO=ProductDTO)"
 		)
 	void addRecordValidate(RecordValidate<ProductDTO> rv) {
 		validators.add(rv);
@@ -48,7 +58,7 @@ public class ProductImpl implements Product {
 
 	@Activate
 	void activate() throws Exception {
-		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
+		store = db.getStore(ProductDTO.class, ProductDTO.class.getSimpleName());
 		if(store.count() == 0)
 		{
 			ProductDTO p = new ProductDTO();
@@ -67,31 +77,31 @@ public class ProductImpl implements Product {
 	
 	@Override
 	public ProductDTO save(ProductDTO product) throws Exception {
-		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
 		
 		for(RecordValidate<ProductDTO> rv: validators) {
 			rv.validate(product);
 		}
+		
+		//TEST - can we abstract the implementation that would be the same across all Record details to a generic class?
+		po.save(product);
 		
 		return store.insert(product);
 	}
 
 	@Override
 	public ProductDTO find(String _id) throws Exception {
-		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
-		//TODO ask Peter about how to handle when no result found - .get() throws NoSuchElementException 
-		return store.find("_id="+_id).one().get();
+		if(store.find("_id="+_id).one().isPresent())
+			return store.find("_id="+_id).one().get();
+		return null;
 	}
 
 	@Override
 	public List<ProductDTO> list(String filter) throws Exception {
-		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
 		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).collect();
 	}
 
 	@Override
 	public boolean delete(String _id) throws Exception {
-		Store<ProductDTO> store = db.getStore(ProductDTO.class, "product");
 		int count = store.find("_id="+_id).remove();
 		//TODO return an Response Object instead
 		return (count>0)?true:false;

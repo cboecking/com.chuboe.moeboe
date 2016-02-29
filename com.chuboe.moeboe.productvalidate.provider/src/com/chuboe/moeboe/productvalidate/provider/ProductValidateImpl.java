@@ -11,7 +11,12 @@ import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 /**
  * 
  */
-@Component(name = "com.chuboe.moeboe.productvalidate")
+@Component(
+		name = "com.chuboe.moeboe.productvalidate",
+		property = {
+				"validateDTO=ProductDTO" 
+		}
+	)
 public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 
 	@Override

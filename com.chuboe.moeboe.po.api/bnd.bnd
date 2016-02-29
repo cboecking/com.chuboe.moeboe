@@ -7,20 +7,18 @@ Bundle-Description: 				\
 	This is  project. An API project should in general not contain any \
 	implementation code.\
 	\
-	${warning;Please update this Bundle-Description in com.chuboe.moeboe.product.api/bnd.bnd}
+	${warning;Please update this Bundle-Description in com.chuboe.moeboe.po.api/bnd.bnd}
 
 	
-Export-Package: \
-	com.chuboe.moeboe.product.api;provide:=true,\
-	com.chuboe.moeboe.po.api
+Export-Package:  \
+	com.chuboe.moeboe.po.api;provide:=true
 
 
 Require-Capability: \
 	compile-only
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
-	com.chuboe.moeboe.po.api;version=latest
+	osgi.enroute.base.api;version=1.0
 
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12

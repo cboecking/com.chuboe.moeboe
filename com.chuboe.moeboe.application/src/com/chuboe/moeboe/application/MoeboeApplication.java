@@ -24,5 +24,5 @@ public class MoeboeApplication implements REST {
 	public String getUpper(String string) throws Exception {
 		return "ProductCount="+product.list("none").size();
 	}
-
+	
 }
