@@ -17,9 +17,9 @@ public class POImpl<T> implements PO<T> {
 //	DB db;
 	
 	@Override
-	public T 	save(T t) throws Exception {
+	public T save(T t) throws Exception {
 		//this does not work - cannot call T.class
-		//Store<T> store = db.getStore(T.class, product.getClass().getSimpleName());
+		//Store<T> store = db.getStore(T.class, t.getClass().getSimpleName());
 		System.out.println("Save" + t.toString());
 		return t;
 	}

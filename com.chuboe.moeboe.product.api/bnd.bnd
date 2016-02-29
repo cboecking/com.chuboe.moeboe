@@ -10,9 +10,7 @@ Bundle-Description: 				\
 	${warning;Please update this Bundle-Description in com.chuboe.moeboe.product.api/bnd.bnd}
 
 	
-Export-Package: \
-	com.chuboe.moeboe.product.api;provide:=true,\
-	com.chuboe.moeboe.po.api
+Export-Package: com.chuboe.moeboe.product.api;provide:=true
 
 
 Require-Capability: \
