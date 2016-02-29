@@ -24,8 +24,7 @@ JPM-Command:			moeboe
 
 -buildpath: \
 	osgi.enroute.base.api,\
-	com.chuboe.moeboe.product.api;version=latest,\
-	com.chuboe.moeboe.businesspartner.api;version=latest
+	com.chuboe.moeboe.product.api;version=latest
 	
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
