@@ -9,7 +9,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.LogService;
 
-import com.chuboe.moeboe.po.api.PO;
+import com.chuboe.moeboe.po.api.RecordPO;
 import com.chuboe.moeboe.po.api.RecordDTO;
 import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 
@@ -26,7 +26,7 @@ import aQute.open.store.api.Store;
 				"POType=DocumentDB" 
 		}
 	)
-public class POImpl<T extends RecordDTO> implements PO<T> {
+public class POImpl<T extends RecordDTO> implements RecordPO<T> {
 	
 	@Reference
 	DB db;

@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.LogService;
 
-import com.chuboe.moeboe.po.api.PO;
+import com.chuboe.moeboe.po.api.RecordPO;
 import com.chuboe.moeboe.product.api.Product;
 import com.chuboe.moeboe.product.api.ProductDTO;
 import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
@@ -30,7 +30,7 @@ public class ProductImpl implements Product {
 	
 	//TEST - can we abstract base logic to a generic class/service - shared between all CRUD entities?
 	@Reference
-	PO<ProductDTO> po;
+	RecordPO<ProductDTO> po;
 	
 	@Activate
 	void activate() throws Exception {

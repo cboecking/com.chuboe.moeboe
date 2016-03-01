@@ -7,7 +7,7 @@ import aQute.open.store.api.Store;
 /**
  * 
  */
-public interface PO<T extends RecordDTO> {
+public interface RecordPO<T extends RecordDTO> {
 	
 	/**
 	 * 
