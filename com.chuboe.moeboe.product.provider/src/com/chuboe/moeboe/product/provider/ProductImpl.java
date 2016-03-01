@@ -1,5 +1,6 @@
 package com.chuboe.moeboe.product.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,32 +32,17 @@ public class ProductImpl implements Product {
 	@Reference
 	PO<ProductDTO> po;
 	
-	//begin -- list of product validators
-	List<RecordValidate<ProductDTO>> validators = new CopyOnWriteArrayList<>();
-	
-	//KP: (key point) reference or call on multiple services
-	//KP: limit reference to a given target type. i.e. "ProductDTO"
-	@Reference(
-			cardinality=ReferenceCardinality.MULTIPLE,
-			policy=ReferencePolicy.DYNAMIC,
-			target="(validateDTO=ProductDTO)"
-		)
-	void addRecordValidate(RecordValidate<ProductDTO> rv) {
-		validators.add(rv);
-	}
-	
-	void removeRecordValidate(RecordValidate<ProductDTO> rv) {
-		validators.remove(rv);
-	}
-	//end -- list of product validators
-	
-
 	@Activate
 	void activate() throws Exception {
 		if(count("none")==0)
 		{
 			ProductDTO p = new ProductDTO();
 			p.name = "First Product";
+			List<String> valList = new ArrayList<>();
+			valList.add("First Validation Entry");
+			p.recordValidation = valList;
+			p.isActive=false;
+			p.isRecordValid=true;
 			p = save(p);
 			
 			//KP: logging with a lambda expression from a MongoDB stream
@@ -71,11 +57,6 @@ public class ProductImpl implements Product {
 	
 	@Override
 	public ProductDTO save(ProductDTO product) throws Exception {
-		
-		for(RecordValidate<ProductDTO> rv: validators) {
-			rv.validate(product);
-		}
-		
 		return po.save(ProductDTO.class, ProductDTO.class.getSimpleName(), product);
 	}
 
