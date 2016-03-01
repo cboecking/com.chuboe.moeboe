@@ -25,16 +25,11 @@ import aQute.open.store.api.Store;
 public class ProductImpl implements Product {
 
 	@Reference
-	DB db;
-	
-	@Reference
 	LogService log;
 	
 	//TEST - can we abstract base logic to a generic class/service - shared between all CRUD entities?
 	@Reference
 	PO<ProductDTO> po;
-	
-	Store<ProductDTO> store;
 	
 	//begin -- list of product validators
 	List<RecordValidate<ProductDTO>> validators = new CopyOnWriteArrayList<>();
@@ -58,19 +53,18 @@ public class ProductImpl implements Product {
 
 	@Activate
 	void activate() throws Exception {
-		store = db.getStore(ProductDTO.class, ProductDTO.class.getSimpleName());
-		if(store.count() == 0)
+		if(count("none")==0)
 		{
 			ProductDTO p = new ProductDTO();
 			p.name = "First Product";
 			p = save(p);
 			
 			//KP: logging with a lambda expression from a MongoDB stream
-			store.all().stream()
+			po.getStore(ProductDTO.class, ProductDTO.class.getSimpleName()).all().stream()
 				.forEach(lam -> log.log(LogService.LOG_INFO, "Activate Product -> Create first entry: _id = " +lam._id+ "; Name = " + lam.name));
 			//to view logs: enter "help log" in the console (assuming gogo-shell and gogo command are installed)
 			
-			store.all().stream()
+			po.getStore(ProductDTO.class, ProductDTO.class.getSimpleName()).all().stream()
 				.forEach(lam -> System.out.println(lam._id + "::" + lam.name));
 		}
 	} //activate
@@ -82,29 +76,27 @@ public class ProductImpl implements Product {
 			rv.validate(product);
 		}
 		
-		//TEST - can we abstract the implementation that would be the same across all Record details to a generic class?
-		po.save(product);
-		
-		return store.insert(product);
+		return po.save(ProductDTO.class, ProductDTO.class.getSimpleName(), product);
 	}
 
 	@Override
 	public ProductDTO find(String _id) throws Exception {
-		if(store.find("_id="+_id).one().isPresent())
-			return store.find("_id="+_id).one().get();
-		return null;
+		return po.find(ProductDTO.class, ProductDTO.class.getSimpleName(), _id);
 	}
 
 	@Override
 	public List<ProductDTO> list(String filter) throws Exception {
-		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).collect();
+		return po.list(ProductDTO.class, ProductDTO.class.getSimpleName(), filter);
 	}
 
 	@Override
 	public boolean delete(String _id) throws Exception {
-		int count = store.find("_id="+_id).remove();
-		//TODO return an Response Object instead
-		return (count>0)?true:false;
+		return po.delete(ProductDTO.class, ProductDTO.class.getSimpleName(), _id);
+	}
+
+	@Override
+	public int count(String filter) throws Exception {
+		return po.count(ProductDTO.class, ProductDTO.class.getSimpleName(), filter);
 	}
 
 }

@@ -18,7 +18,8 @@ Require-Capability: \
 	compile-only
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0
+	osgi.enroute.base.api;version=1.0,\
+	aQute.open.store.api
 
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
