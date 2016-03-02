@@ -21,9 +21,9 @@ public class ProductImpl implements Product {
 	@Reference
 	LogService log;
 	
-	//TEST - can we abstract base logic to a generic class/service - shared between all CRUD entities?
 	@Reference
 	RecordPO<ProductDTO> po;
+	//NOTE: The property = {"POType=DocumentDB"} can be used to specify what type of storage you choose (DocumentDB vs RelationalDB)
 	
 	@Activate
 	void activate() throws Exception {
