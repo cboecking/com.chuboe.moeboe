@@ -40,7 +40,6 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	//begin -- list of validators
 	//TODO: Changeme: this should be a Map of Lists - each map entry should be type of validator
 	//TODO: Changeme: this currently executes all validators regardless of the validator type. 
-		// recommendation - add a service lookup method to look up specific validators when needed.
 	List<RecordValidate<T>> validators = new CopyOnWriteArrayList<>();
 	
 	//KP: (key point) reference or call on multiple services
