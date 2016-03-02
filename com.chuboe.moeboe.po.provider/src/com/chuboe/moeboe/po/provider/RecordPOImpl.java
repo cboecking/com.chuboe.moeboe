@@ -60,6 +60,11 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	@Override
 	public T save(Class<T> clazz, String collection, T t) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
+		
+		//TODO: find base validators - applies to all services
+		//code here
+		
+		//TODO; find service specific validators
 		for(RecordValidate<T> rv: validators) {
 			rv.validate(t);
 		}
@@ -77,7 +82,7 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	@Override
 	public List<T> list(Class<T> clazz, String collection, String filter) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
-		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).collect();
+		return store.find((isFilterEmpty(filter)) ? "_id=*" : filter).collect();
 	}
 
 	@Override
@@ -86,13 +91,16 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		int count = store.find("_id="+_id).remove();
 		//TODO return an Response Object instead
 		return (count>0)?true:false;
-
 	}
 
 	@Override
 	public int count(Class<T> clazz, String collection, String filter) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
-		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).count();
+		return store.find((isFilterEmpty(filter)) ? "_id=*" : filter).count();
+	}
+	
+	boolean isFilterEmpty(String filter) {
+		return filter == null || filter.isEmpty() || filter.equals("none");
 	}
 	
 	//TODO: consider creating a dynamic service lookup that find services for filters passed into the above methods
