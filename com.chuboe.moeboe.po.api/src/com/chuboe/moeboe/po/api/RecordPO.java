@@ -16,4 +16,7 @@ public interface RecordPO<T extends RecordDTO> {
 	boolean delete(Class<T> clazz, String collection, String _id) throws Exception;
 	int count(Class<T> clazz, String collection, String filter) throws Exception;
 	
+	String RECORDPO_ACTION_SAVE = "com.chuboe.moeboe.po.recordpo.action.save";
+	String RECORDPO_ACTION_DELETE = "com.chuboe.moeboe.po.recordpo.action.delete";
+	
 }
