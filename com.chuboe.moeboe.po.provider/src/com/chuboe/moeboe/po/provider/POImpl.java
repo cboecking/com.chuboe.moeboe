@@ -92,10 +92,5 @@ public class POImpl<T extends RecordDTO> implements RecordPO<T> {
 		Store<T> store = db.getStore(clazz, collection);
 		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).count();
 	}
-
-	@Override
-	public Store<T> getStore(Class<T> clazz, String collection) throws Exception {
-		return db.getStore(clazz, collection);
-	}
-
+	
 }

@@ -18,7 +18,4 @@ public interface RecordPO<T extends RecordDTO> {
 	boolean delete(Class<T> clazz, String collection, String _id) throws Exception;
 	int count(Class<T> clazz, String collection, String filter) throws Exception;
 	
-	//is this needed? Added to support streaming...
-	Store<T> getStore(Class<T> clazz, String collection) throws Exception;
-	
 }
