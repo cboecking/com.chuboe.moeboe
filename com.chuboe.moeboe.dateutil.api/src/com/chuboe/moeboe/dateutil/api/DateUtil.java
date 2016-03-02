@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
  * Date Utils
  * All times are assumed in UTC
  */
-public interface Dateutil {
+public interface DateUtil {
 	
 	/**
 	 * Assumes UTC 

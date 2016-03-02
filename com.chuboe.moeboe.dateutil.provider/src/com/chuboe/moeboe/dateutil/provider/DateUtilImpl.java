@@ -4,12 +4,12 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import com.chuboe.moeboe.dateutil.api.Dateutil;
+import com.chuboe.moeboe.dateutil.api.DateUtil;
 
 /**
  * 
  */
-public class DateutilImpl implements Dateutil{
+public class DateUtilImpl implements DateUtil{
 
 	@Override
 	public long nowEpochSecond() {
