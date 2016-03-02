@@ -8,16 +8,13 @@ Bundle-Description: 				\
 	A bundle with a provider. Notice that this provider exports the API package. \
 	It also provides a JUnit test and it can be run standalone. \
 	\
-	${warning;Please update this Bundle-Description in com.chuboe.moeboe.productvalidate.provider/bnd.bnd}
+	${warning;Please update this Bundle-Description in com.chuboe.moeboe.dateutil.provider/bnd.bnd}
 
 Private-Package:  \
-	com.chuboe.moeboe.productvalidate.provider
+	com.chuboe.moeboe.dateutil.provider
 	
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
-	com.chuboe.moeboe.recordvalidate.api;version=latest,\
-	com.chuboe.moeboe.product.api;version=latest,\
-	com.chuboe.moeboe.po.api;version=latest,\
 	com.chuboe.moeboe.dateutil.api;version=latest
 	
 -testpath: \
@@ -27,8 +24,8 @@ Private-Package:  \
 
 
 -runrequires:  \
-	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productvalidate.provider)'
+	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.dateutil.provider)'
 	
 -runbundles: \
 	${error;Resolve first}
-Export-Package: com.chuboe.moeboe.recordvalidate.api
+Export-Package: com.chuboe.moeboe.dateutil.api

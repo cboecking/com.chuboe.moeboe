@@ -26,6 +26,8 @@ public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 	}
 	
 	void setCoreDates(ProductDTO product) {
+		//TODO: be able to use the following line:
+		//long tmpTime = nowEpochSecond(); // does not find the method in com.chuboe.moeboe.dateutil even though it is in the bnd build path
 		long currentTime = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
 		if (product.created == 0) {
 			product.created = currentTime;
