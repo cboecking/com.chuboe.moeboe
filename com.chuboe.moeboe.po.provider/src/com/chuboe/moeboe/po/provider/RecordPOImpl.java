@@ -3,11 +3,14 @@ package com.chuboe.moeboe.po.provider;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.chuboe.moeboe.po.api.RecordPO;
 import com.chuboe.moeboe.po.api.RecordDTO;
@@ -92,5 +95,14 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		Store<T> store = db.getStore(clazz, collection);
 		return store.find((filter == null || filter.isEmpty() || filter.equals("none")) ? "_id=*" : filter).count();
 	}
+	
+	//TODO: consider creating a dynamic service lookup that find services for filters passed into the above methods
+//	private final BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+//	
+//	protected <T> T getService(Class<T> clazz) throws InterruptedException {
+//		ServiceTracker<T,T> st = new ServiceTracker<>(context, clazz, null);
+//		st.open();
+//		return st.waitForService(1000);
+//	} 
 	
 }
