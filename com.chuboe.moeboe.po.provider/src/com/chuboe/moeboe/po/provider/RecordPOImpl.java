@@ -26,7 +26,7 @@ import aQute.open.store.api.Store;
 				"POType=DocumentDB" 
 		}
 	)
-public class POImpl<T extends RecordDTO> implements RecordPO<T> {
+public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	
 	@Reference
 	DB db;
