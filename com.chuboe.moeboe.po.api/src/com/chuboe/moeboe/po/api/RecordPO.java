@@ -2,8 +2,6 @@ package com.chuboe.moeboe.po.api;
 
 import java.util.List;
 
-import aQute.open.store.api.Store;
-
 /**
  * 
  */
