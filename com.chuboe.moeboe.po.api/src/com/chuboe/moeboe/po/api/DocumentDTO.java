@@ -3,7 +3,8 @@ package com.chuboe.moeboe.po.api;
 /**
  * @author Chuck Boecking
  * DocumentDTO is an extension of RecordDTO. It adds transactional behavior to a Record.
- * A Sales Order is an example of a Document. A Sales Order Line is an example or a Record.
+ * A Sales Order is an example of a Document. It is transactional, and it manages other Records (Sales Order Line Records) 
+ * 
  */
 public class DocumentDTO extends RecordDTO {
 	

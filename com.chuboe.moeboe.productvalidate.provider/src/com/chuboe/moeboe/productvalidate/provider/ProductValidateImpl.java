@@ -26,10 +26,11 @@ public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 	}
 	
 	void setCoreDates(ProductDTO product) {
+		long currentTime = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
 		if (product.created == 0) {
-			product.created = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
+			product.created = currentTime;
 		}
-		product.updated = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
+		product.updated = currentTime;
 	}
 
 }
