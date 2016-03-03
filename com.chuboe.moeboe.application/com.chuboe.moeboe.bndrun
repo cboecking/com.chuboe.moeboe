@@ -19,6 +19,7 @@ JPM-Command:					moeboe
 -runbundles: \
 	aQute.open.store.mongo.provider;version='[1.0.0,1.0.1)',\
 	com.chuboe.moeboe.application;version=snapshot,\
+	com.chuboe.moeboe.dateutil.provider;version=snapshot,\
 	com.chuboe.moeboe.po.provider;version=snapshot,\
 	com.chuboe.moeboe.product.provider;version=snapshot,\
 	com.chuboe.moeboe.productREST.provider;version=snapshot,\
