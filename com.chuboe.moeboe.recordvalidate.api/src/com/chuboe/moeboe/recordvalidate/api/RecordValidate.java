@@ -8,5 +8,5 @@ public interface RecordValidate<T> {
 	/**
 	 * 
 	 */
-	T validate(T record);
+	T validate(T record, String recordPOAction);
 }

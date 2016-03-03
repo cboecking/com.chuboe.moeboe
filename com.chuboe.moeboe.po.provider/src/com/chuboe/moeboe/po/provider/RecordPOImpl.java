@@ -61,13 +61,18 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	public T save(Class<T> clazz, String collection, T t) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
 		
+		clearValidationFields(t);
+		
 		//TODO: find base validators - applies to all services
 		//code here
 		
-		//TODO; find service specific validators
+		//TODO; find service specific validators - see above validators notes about limiting...
 		for(RecordValidate<T> rv: validators) {
-			rv.validate(t);
+			rv.validate(t, RecordPO.RECORDPO_ACTION_SAVE);
 		}
+		
+		setValidationFields(t);
+		
 		return store.insert(t);
 	}
 
@@ -88,6 +93,10 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	@Override
 	public boolean delete(Class<T> clazz, String collection, String _id) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
+		
+		//TODO: need to store.find the record, clear validations, validate the delete action, act accordingly
+		//TODO: use configuration to determine if record can be deleted or just flagged as deleted
+		
 		int count = store.find("_id="+_id).remove();
 		//TODO return an Response Object instead
 		return (count>0)?true:false;
@@ -101,6 +110,16 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	
 	boolean isFilterEmpty(String filter) {
 		return filter == null || filter.isEmpty() || filter.equals("none");
+	}
+	
+	void clearValidationFields(T t) {
+		t.isRecordValid=true;
+		t.recordValidation.clear();		
+	}
+	
+	void setValidationFields(T t) {
+		if(!t.recordValidation.isEmpty())
+			t.isRecordValid=false;
 	}
 	
 	//TODO: consider creating a dynamic service lookup that find services for filters passed into the above methods

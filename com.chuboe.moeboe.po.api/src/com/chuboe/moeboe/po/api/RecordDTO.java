@@ -1,5 +1,6 @@
 package com.chuboe.moeboe.po.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.dto.DTO;
@@ -82,7 +83,7 @@ public class RecordDTO extends DTO {
 	/**
 	 * Collection of validation results.  
 	 */
-	public List<String> recordValidation;
+	public List<String> recordValidation = new ArrayList<>();
 	
 	/**
 	 * If True, allows the record to act as if Valid even if RecordValidation List is not empty.

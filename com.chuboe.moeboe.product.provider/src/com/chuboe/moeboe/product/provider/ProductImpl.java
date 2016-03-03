@@ -23,7 +23,7 @@ public class ProductImpl implements Product {
 	
 	@Reference
 	RecordPO<ProductDTO> po;
-	//NOTE: The property = {"POType=DocumentDB"} can be used to specify what type of storage you choose (DocumentDB vs RelationalDB)
+	//NOTE: In the future, property = {"POType=DocumentDB"} can be used to specify what type of storage you choose (DocumentDB vs RelationalDB)
 	
 	@Activate
 	void activate() throws Exception {
@@ -31,11 +31,9 @@ public class ProductImpl implements Product {
 		{
 			ProductDTO p = new ProductDTO();
 			p.name = "First Product";
-			List<String> valList = new ArrayList<>();
-			valList.add("First Validation Entry");
-			p.recordValidation = valList;
-			p.isActive=false;
-			p.isRecordValid=true;
+			//p.recordValidation.add("First Validation Entry");
+			//p.isActive=false;
+			//p.isRecordValid=true;
 			p = save(p);
 			
 			list("none").stream()
