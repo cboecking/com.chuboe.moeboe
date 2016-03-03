@@ -21,6 +21,7 @@ import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 	)
 public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 
+	//KP: use of a library (as opposed to a service component). Libraries have no observable state.
 	DateUtil du;
 	
 	@Override
