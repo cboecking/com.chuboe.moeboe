@@ -14,5 +14,5 @@ public interface DocumentPO<T extends RecordDTO> extends RecordPO<T> {
 	String DOCUMENTPO_ACTION_COMPLETE = "com.chuboe.moeboe.po.documentpo.action.complete";
 	String DOCUMENTPO_ACTION_REVERSE_CORRECT = "com.chuboe.moeboe.po.documentpo.action.reverse_correct";
 	String DOCUMENTPO_ACTION_REVERSE_ACCRUE = "com.chuboe.moeboe.po.documentpo.action.reverse_accrue";
-	String DOCUMENTPO_ACTION_REVERSE_VOID = "com.chuboe.moeboe.po.documentpo.action.void";
+	String DOCUMENTPO_ACTION_VOID = "com.chuboe.moeboe.po.documentpo.action.void";
 }
