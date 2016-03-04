@@ -1,6 +1,8 @@
 package com.chuboe.moeboe.po.provider;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.osgi.framework.BundleContext;
@@ -9,6 +11,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -37,12 +41,16 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	@Reference
 	LogService log;
 	
+	@Reference
+	EventAdmin eventAdmin;
+	
 	//begin -- list of validators
 	//TODO: Changeme: this should be a Map of Lists - each map entry should be type of validator
 	//TODO: Changeme: this currently executes all validators regardless of the validator type. 
 	List<RecordValidate<T>> validators = new CopyOnWriteArrayList<>();
 	
-	//KP: (key point) reference or call on multiple services
+	//KP: (key point) reference or call on multiple services synchronously or in-line
+	//KP: Whiteboard example - before or after save logic
 	@Reference(
 			cardinality=ReferenceCardinality.MULTIPLE,
 			policy=ReferencePolicy.DYNAMIC
@@ -61,19 +69,36 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	public T save(Class<T> clazz, String collection, T t) throws Exception {
 		Store<T> store = db.getStore(clazz, collection);
 		
+		log.log(LogService.LOG_DEBUG, "Entering RecordPO.save: "+t);
+		
 		clearValidationFields(t);
 		
-		//TODO: find base validators - applies to all services
+		//TODO: find record base validators - the ones that apply to all services
 		//code here
+		
+		log.log(LogService.LOG_DEBUG, "RecordPO.save after record base validators: "+t);
 		
 		//TODO; find service specific validators - see above validators notes about limiting...
 		for(RecordValidate<T> rv: validators) {
-			rv.validate(t, RecordPO.RECORDPO_ACTION_SAVE);
+			rv.validate(t, RECORDPO_ACTION_SAVE);
 		}
+		
+		log.log(LogService.LOG_DEBUG, "RecordPO.save after record validators: "+t);
 		
 		setValidationFields(t);
 		
-		return store.insert(t);
+		t = store.insert(t);
+		
+		log.log(LogService.LOG_DEBUG, "RecordPO.save after insert: "+t);
+		
+		//post a save event
+		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
+		Map<String, T> properties = new HashMap<>();
+		properties.put(collection, t);
+		Event event = new Event(RECORDPO_ACTION_SAVE, properties);
+		eventAdmin.postEvent(event);
+		
+		return t;
 	}
 
 	@Override
