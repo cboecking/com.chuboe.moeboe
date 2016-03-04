@@ -14,7 +14,8 @@ JPM-Command:					moeboe
 	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.application)',\
 	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productREST.provider)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)'
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
+	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productaction.provider)'
 
 -runbundles: \
 	aQute.open.store.mongo.provider;version='[1.0.0,1.0.1)',\
@@ -23,6 +24,7 @@ JPM-Command:					moeboe
 	com.chuboe.moeboe.po.provider;version=snapshot,\
 	com.chuboe.moeboe.product.provider;version=snapshot,\
 	com.chuboe.moeboe.productREST.provider;version=snapshot,\
+	com.chuboe.moeboe.productaction.provider;version=snapshot,\
 	com.chuboe.moeboe.productvalidate.provider;version=snapshot,\
 	org.apache.felix.configadmin;version='[1.8.6,1.8.7)',\
 	org.apache.felix.gogo.command;version='[0.14.0,0.14.1)',\

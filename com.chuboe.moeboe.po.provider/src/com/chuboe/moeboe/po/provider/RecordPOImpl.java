@@ -95,7 +95,7 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
 		Map<String, T> properties = new HashMap<>();
 		properties.put(collection, t);
-		Event event = new Event(RECORDPO_ACTION_SAVE, properties);
+		Event event = new Event(RECORDPO_ACTION_SAVE+"/"+collection, properties);
 		eventAdmin.postEvent(event);
 		
 		return t;
