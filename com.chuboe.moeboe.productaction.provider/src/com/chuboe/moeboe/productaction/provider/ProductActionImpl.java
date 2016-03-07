@@ -3,6 +3,7 @@ package com.chuboe.moeboe.productaction.provider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.osgi.service.log.LogService;
 
@@ -12,8 +13,7 @@ import com.chuboe.moeboe.product.api.ProductDTO;
 /**
  * 
  */
-//@Component(name = "com.chuboe.moeboe.productaction")
-@Component
+@Component(property=EventConstants.EVENT_TOPIC+"="+RecordPO.RECORDPO_ACTION_ALL)
 public class ProductActionImpl implements EventHandler {
 	
 	@Reference
@@ -22,7 +22,7 @@ public class ProductActionImpl implements EventHandler {
 	@Override
 	public void handleEvent(Event event) {
 		
-		System.out.println("I AM HERE...");
+		//System.out.println("I AM HERE...");
 		
 		if(event.getTopic().equals(RecordPO.RECORDPO_ACTION_SAVE+"/"+ProductDTO.class.getSimpleName())) {
 			//do after save stuff - always in separate protected methods
