@@ -87,15 +87,29 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		
 		setValidationFields(t);
 		
+		//keep an old version for change log
+		T t_old = t;
 		t = store.insert(t);
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after insert: "+t);
 		
+		//events section
+		Map<String, T> properties = new HashMap<>();
+		Event event;
+		
 		//post a save event
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
-		Map<String, T> properties = new HashMap<>();
+		properties.clear();
 		properties.put(collection, t);
-		Event event = new Event(RECORDPO_ACTION_SAVE+"/"+collection, properties);
+		event = new Event(RECORDPO_ACTION_SAVE+"/"+collection, properties);
+		eventAdmin.postEvent(event);
+		
+		//post a change log event
+		properties.clear();
+		properties.put(collection, t);
+		properties.put(RECORDPO_EVENT_PROPERTY_OLD, t_old);
+		properties.put(RECORDPO_EVENT_PROPERTY_NEW, t);
+		event = new Event(RECORDPO_CHANGE_LOG, properties);
 		eventAdmin.postEvent(event);
 		
 		return t;
