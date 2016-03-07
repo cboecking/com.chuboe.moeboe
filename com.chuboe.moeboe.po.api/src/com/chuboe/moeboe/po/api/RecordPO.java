@@ -20,8 +20,9 @@ public interface RecordPO<T extends RecordDTO> {
 	String RECORDPO_ACTION_SAVE = "com/chuboe/moeboe/po/recordpo/action/save";
 	String RECORDPO_ACTION_DELETE = "com/chuboe/moeboe/po/recordpo/action/delete";
 	
-	String RECORDPO_EVENT_PROPERTY_OLD = "OLD";
-	String RECORDPO_EVENT_PROPERTY_NEW = "NEW";
+	String RECORDPO_EVENT_PROPERTY_DTO_OLD = "DTO_OLD";
+	String RECORDPO_EVENT_PROPERTY_DTO_NEW = "DTO_NEW";
+	String RECORDPO_EVENT_PROPERTY_COLLECTION = "COLLECTION";
 	
 	String RECORDPO_CHANGE_LOG = "com/chuboe/moeboe/po/recordpo/change/log";
 	

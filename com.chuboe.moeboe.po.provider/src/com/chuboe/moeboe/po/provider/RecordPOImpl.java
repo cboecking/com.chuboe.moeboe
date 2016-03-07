@@ -22,6 +22,7 @@ import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 
 import aQute.open.store.api.DB;
 import aQute.open.store.api.Store;
+import osgi.enroute.dto.api.DTOs;
 
 /**
  * @param <T>
@@ -43,6 +44,9 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	
 	@Reference
 	EventAdmin eventAdmin;
+	
+	@Reference
+	DTOs dtos;
 	
 	//begin -- list of validators
 	//TODO: Changeme: this should be a Map of Lists - each map entry should be type of validator
@@ -87,28 +91,30 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		
 		setValidationFields(t);
 		
-		//keep an old version for change log
-		T t_old = t;
+		//create an old version for change log
+		T t_old = dtos.deepCopy(t);
 		t = store.insert(t);
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after insert: "+t);
 		
 		//events section
-		Map<String, T> properties = new HashMap<>();
+		Map<String, Object> properties = new HashMap<>();
 		Event event;
 		
 		//post a save event
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
 		properties.clear();
-		properties.put(collection, t);
+		properties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
+		properties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
 		event = new Event(RECORDPO_ACTION_SAVE+"/"+collection, properties);
 		eventAdmin.postEvent(event);
 		
 		//post a change log event
+		//TODO: check configuration to see if the collection wants a change log
 		properties.clear();
 		properties.put(collection, t);
-		properties.put(RECORDPO_EVENT_PROPERTY_OLD, t_old);
-		properties.put(RECORDPO_EVENT_PROPERTY_NEW, t);
+		properties.put(RECORDPO_EVENT_PROPERTY_DTO_OLD, t_old);
+		properties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
 		event = new Event(RECORDPO_CHANGE_LOG, properties);
 		eventAdmin.postEvent(event);
 		

@@ -15,11 +15,13 @@ JPM-Command:					moeboe
 	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productREST.provider)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
-	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productaction.provider)'
+	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.productaction.provider)',\
+	osgi.identity;filter:='(osgi.identity=com.chuboe.moeboe.changelog.provider)'
 
 -runbundles: \
 	aQute.open.store.mongo.provider;version='[1.0.0,1.0.1)',\
 	com.chuboe.moeboe.application;version=snapshot,\
+	com.chuboe.moeboe.changelog.provider;version=snapshot,\
 	com.chuboe.moeboe.dateutil.provider;version=snapshot,\
 	com.chuboe.moeboe.po.provider;version=snapshot,\
 	com.chuboe.moeboe.product.provider;version=snapshot,\
