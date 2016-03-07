@@ -91,13 +91,20 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		
 		setValidationFields(t);
 		
-		//create an old version for change log
-		T t_old = dtos.deepCopy(t);
+		//find old version for change log comparison
+		T t_old;
+		if(t._id != null) {
+			Store<T> storeOld = db.getStore(clazz, collection);
+			t_old = find(clazz, collection, t._id);
+		} else {
+			t_old = null;
+		}
+
 		t = store.insert(t);
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after insert: "+t);
 		
-		//events section
+		//post save events section
 		Map<String, Object> properties = new HashMap<>();
 		Event event;
 		
