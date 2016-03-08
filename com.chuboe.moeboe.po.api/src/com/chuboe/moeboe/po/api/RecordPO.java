@@ -20,6 +20,7 @@ public interface RecordPO<T extends RecordDTO> {
 	String RECORDPO_ACTION_SAVE = "com/chuboe/moeboe/po/recordpo/action/save";
 	String RECORDPO_ACTION_DELETE = "com/chuboe/moeboe/po/recordpo/action/delete";
 	
+	//TODO: change to enum
 	String RECORDPO_EVENT_PROPERTY_DTO_OLD = "DTO_OLD";
 	String RECORDPO_EVENT_PROPERTY_DTO_NEW = "DTO_NEW";
 	String RECORDPO_EVENT_PROPERTY_COLLECTION = "COLLECTION";

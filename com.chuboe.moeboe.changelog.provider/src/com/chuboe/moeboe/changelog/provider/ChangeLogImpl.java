@@ -8,6 +8,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.service.log.LogService;
 
 import com.chuboe.moeboe.changelog.api.ChangeLog;
 import com.chuboe.moeboe.po.api.RecordPO;
@@ -28,9 +29,13 @@ public class ChangeLogImpl implements EventHandler {
 	@Reference
 	DTOs dtos;
 	
+	@Reference
+	LogService log;
+	
 	@Override
 	public void handleEvent(Event event) {
 
+		//TODO: change below System.out to log statements
 		//System.out.println("Change Log Here - Represent!!!");
 		
 		//TODO: initialize storage
@@ -41,15 +46,21 @@ public class ChangeLogImpl implements EventHandler {
 		try {
 			List<Difference> diffs = dtos.diff(oldDTO, newDTO);
 			for(Difference diff: diffs) {
-				System.out.println(diff);
+
+				//System.out.println(diff);
+				log.log(LogService.LOG_INFO, "Change Log Difference: " + diff);
+				
 				Retrieve retrieveNew = dtos.get(newDTO, diff.path);
 				Retrieve retrieveOld = dtos.get(oldDTO, diff.path);
-				System.out.println("New: " + retrieveNew.toString());
-				System.out.println("Old: " + retrieveOld.toString());
+
+				//System.out.println("Old: " + retrieveOld.toString());
+				log.log(LogService.LOG_INFO, "Old: " + retrieveOld);
+				//System.out.println("New: " + retrieveNew.toString());
+				log.log(LogService.LOG_INFO, "New: " + retrieveNew);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			log.log(LogService.LOG_ERROR, "ChangeLogImpl Exception during diff", e);
 		}
 		
 		//TODO: persist differences

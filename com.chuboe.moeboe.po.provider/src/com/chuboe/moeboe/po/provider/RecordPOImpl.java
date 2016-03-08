@@ -49,12 +49,12 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	DTOs dtos;
 	
 	//begin -- list of validators
-	//TODO: Changeme: this should be a Map of Lists - each map entry should be type of validator
+	//TODO: Changeme: this should be a Map of Lists - each map key should be type of validator (Ex. ProductDTO)
 	//TODO: Changeme: this currently executes all validators regardless of the validator type. 
 	List<RecordValidate<T>> validators = new CopyOnWriteArrayList<>();
 	
 	//KP: (key point) reference or call on multiple services synchronously or in-line
-	//KP: Whiteboard example - before or after save logic
+	//KP: Whiteboard example - before save logic
 	@Reference(
 			cardinality=ReferenceCardinality.MULTIPLE,
 			policy=ReferencePolicy.DYNAMIC
@@ -107,7 +107,8 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		Map<String, Object> properties = new HashMap<>();
 		Event event;
 		
-		//post a save event
+		//begin - post save events 
+		//after save event
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
 		properties.clear();
 		properties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
@@ -123,6 +124,8 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		properties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
 		event = new Event(RECORDPO_CHANGE_LOG, properties);
 		eventAdmin.postEvent(event);
+		
+		//end - post save events
 		
 		return t;
 	}
