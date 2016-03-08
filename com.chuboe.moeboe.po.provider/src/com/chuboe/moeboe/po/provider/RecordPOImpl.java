@@ -94,7 +94,6 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		//find old version for change log comparison
 		T t_old;
 		if(t._id != null) {
-			Store<T> storeOld = db.getStore(clazz, collection);
 			t_old = find(clazz, collection, t._id);
 		} else {
 			t_old = null;
