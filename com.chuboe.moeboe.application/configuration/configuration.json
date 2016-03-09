@@ -1,2 +1,7 @@
 [
+	{
+      "service.factoryPid":			"aQute.impl.store.mongo.MongoDBImpl", 
+      "service.pid":				"Db",
+      "db":							"moeboe-14"
+	}
 ]
