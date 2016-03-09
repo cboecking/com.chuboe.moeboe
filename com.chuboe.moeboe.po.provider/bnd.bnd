@@ -22,7 +22,8 @@ Private-Package:  \
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
--includeresource: {readme.md}
+-includeresource: {readme.md},\
+	{configuration=configuration}
 
 
 -runrequires:  \
