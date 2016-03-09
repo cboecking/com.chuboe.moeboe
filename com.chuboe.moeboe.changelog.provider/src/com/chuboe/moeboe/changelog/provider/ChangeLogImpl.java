@@ -11,8 +11,12 @@ import org.osgi.service.event.EventHandler;
 import org.osgi.service.log.LogService;
 
 import com.chuboe.moeboe.changelog.api.ChangeLog;
+import com.chuboe.moeboe.changelog.api.ChangeLogDTO;
+import com.chuboe.moeboe.po.api.RecordDTO;
 import com.chuboe.moeboe.po.api.RecordPO;
 
+import aQute.open.store.api.DB;
+import aQute.open.store.api.Store;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.dto.api.DTOs.Difference;
 import osgi.enroute.dto.api.DTOs.Retrieve;
@@ -27,6 +31,9 @@ import osgi.enroute.dto.api.DTOs.Retrieve;
 public class ChangeLogImpl implements EventHandler {
 
 	@Reference
+	DB db;
+
+	@Reference
 	DTOs dtos;
 	
 	@Reference
@@ -35,16 +42,23 @@ public class ChangeLogImpl implements EventHandler {
 	@Override
 	public void handleEvent(Event event) {
 
-		//TODO: change below System.out to log statements
 		//System.out.println("Change Log Here - Represent!!!");
 		
-		//TODO: initialize storage
-		
-		//find difference between new and old
-		DTO newDTO = (DTO) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_DTO_NEW);
-		DTO oldDTO = (DTO) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_DTO_OLD);
 		try {
+			Store<ChangeLogDTO> store = db.getStore(ChangeLogDTO.class, ChangeLogDTO.class.getSimpleName());
+			
+			//find difference between new and old
+			RecordDTO newDTO = (RecordDTO) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_DTO_NEW);
+			RecordDTO oldDTO = (RecordDTO) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_DTO_OLD);
+
 			List<Difference> diffs = dtos.diff(oldDTO, newDTO);
+			
+			ChangeLogDTO cl = new ChangeLogDTO();
+			cl.collection = (String) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_COLLECTION);
+			cl.changes = diffs;
+			cl.collection_id = newDTO._id;
+			store.insert(cl);
+			
 			for(Difference diff: diffs) {
 
 				//System.out.println(diff);
