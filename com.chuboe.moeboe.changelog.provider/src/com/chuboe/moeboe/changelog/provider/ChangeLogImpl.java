@@ -1,5 +1,6 @@
 package com.chuboe.moeboe.changelog.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.dto.DTO;
@@ -11,6 +12,7 @@ import org.osgi.service.event.EventHandler;
 import org.osgi.service.log.LogService;
 
 import com.chuboe.moeboe.changelog.api.ChangeLog;
+import com.chuboe.moeboe.changelog.api.ChangeLog.ChangeLogDetails;
 import com.chuboe.moeboe.changelog.api.ChangeLogDTO;
 import com.chuboe.moeboe.po.api.RecordDTO;
 import com.chuboe.moeboe.po.api.RecordPO;
@@ -55,9 +57,9 @@ public class ChangeLogImpl implements EventHandler {
 			
 			ChangeLogDTO cl = new ChangeLogDTO();
 			cl.collection = (String) event.getProperty(RecordPO.RECORDPO_EVENT_PROPERTY_COLLECTION);
-			cl.changes = diffs;
+			log.log(LogService.LOG_INFO, "Change Log Collection Name: " + cl.collection);
 			cl.collection_id = newDTO._id;
-			store.insert(cl);
+			cl.changes = new ArrayList<>();
 			
 			for(Difference diff: diffs) {
 
@@ -66,12 +68,20 @@ public class ChangeLogImpl implements EventHandler {
 				
 				Retrieve retrieveNew = dtos.get(newDTO, diff.path);
 				Retrieve retrieveOld = dtos.get(oldDTO, diff.path);
+				
+				ChangeLogDetails cld = new ChangeLogDetails();
+				cld.before = retrieveOld.toString();
+				cld.after = retrieveNew.toString();
+				cl.changes.add(cld);
 
 				//System.out.println("Old: " + retrieveOld.toString());
 				log.log(LogService.LOG_INFO, "Old: " + retrieveOld);
 				//System.out.println("New: " + retrieveNew.toString());
 				log.log(LogService.LOG_INFO, "New: " + retrieveNew);
 			}
+			
+			store.insert(cl);
+			
 		} catch (Exception e) {
 			//e.printStackTrace();
 			log.log(LogService.LOG_ERROR, "ChangeLogImpl Exception during diff", e);

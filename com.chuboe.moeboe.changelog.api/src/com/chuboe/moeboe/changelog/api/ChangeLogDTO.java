@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.osgi.dto.DTO;
 
+import com.chuboe.moeboe.changelog.api.ChangeLog.ChangeLogDetails;
+
 import osgi.enroute.dto.api.DTOs.Difference;
 
 /**
@@ -25,7 +27,7 @@ public class ChangeLogDTO extends DTO {
 	/**
 	 * Collection of changes from OLD to NEW 
 	 */
-	public List<Difference> changes;
+	public List<ChangeLogDetails> changes;
 	
 	/**
 	 * Name of the collection being changed 

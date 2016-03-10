@@ -103,27 +103,10 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after insert: "+t);
 		
-		//post save events section
-		Map<String, Object> properties = new HashMap<>();
-		Event event;
-		
 		//begin - post save events 
-		//after save event
-		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
-		properties.clear();
-		properties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
-		properties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
-		event = new Event(RECORDPO_ACTION_SAVE+"/"+collection, properties);
-		eventAdmin.postEvent(event);
-		
-		//post a change log event
-		//TODO: check configuration to see if the collection wants a change log
-		properties.clear();
-		properties.put(collection, t);
-		properties.put(RECORDPO_EVENT_PROPERTY_DTO_OLD, t_old);
-		properties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
-		event = new Event(RECORDPO_CHANGE_LOG, properties);
-		eventAdmin.postEvent(event);
+
+		postActionEvent(RECORDPO_ACTION_SAVE, collection, t);
+		postChangeLogEvent(RECORDPO_CHANGE_LOG, collection, t, t_old);
 		
 		//end - post save events
 		
@@ -174,6 +157,28 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	void setValidationFields(T t) {
 		if(!t.recordValidation.isEmpty())
 			t.isRecordValid=false;
+	}
+	
+	protected void postActionEvent(String event, String collection, T t) {
+		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
+		Map<String, Object> actionProperties = new HashMap<>();
+		Event actionEvent;
+
+		actionProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
+		actionProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
+		actionEvent = new Event(event+"/"+collection, actionProperties);
+		eventAdmin.postEvent(actionEvent);
+	}
+
+	protected void postChangeLogEvent(String event, String collection, T t, T t_old) {
+		Map<String, Object> changeLogProperties = new HashMap<>();
+		Event changeLogEvent;
+		//TODO: check configuration to see if the collection wants a change log
+		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
+		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_OLD, t_old);
+		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
+		changeLogEvent = new Event(event, changeLogProperties);
+		eventAdmin.postEvent(changeLogEvent);
 	}
 	
 	//TODO: consider creating a dynamic service lookup that find services for filters passed into the above methods
