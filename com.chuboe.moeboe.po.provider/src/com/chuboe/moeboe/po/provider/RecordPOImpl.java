@@ -162,22 +162,21 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	protected void postActionEvent(String event, String collection, T t) {
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
 		Map<String, Object> actionProperties = new HashMap<>();
-		Event actionEvent;
 
 		actionProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
 		actionProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
-		actionEvent = new Event(event+"/"+collection, actionProperties);
+		Event actionEvent = new Event(event+"/"+collection, actionProperties);
 		eventAdmin.postEvent(actionEvent);
 	}
 
 	protected void postChangeLogEvent(String event, String collection, T t, T t_old) {
 		Map<String, Object> changeLogProperties = new HashMap<>();
-		Event changeLogEvent;
+
 		//TODO: check configuration to see if the collection wants a change log
 		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
 		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_OLD, t_old);
 		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
-		changeLogEvent = new Event(event, changeLogProperties);
+		Event changeLogEvent = new Event(event, changeLogProperties);
 		eventAdmin.postEvent(changeLogEvent);
 	}
 	
