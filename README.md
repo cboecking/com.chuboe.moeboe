@@ -6,3 +6,9 @@ This repository represents a template workspace for bndtools, it is the easiest 
 [1]: http://enroute.osgi.org/quick-start.html
 [2]: http://enroute.osgi.org/tutorial_base/800-ci.html
 [3]: https://www.gradle.org/
+
+To add to your repository, copy and paste the following into a bundle descriptor in your cnf=>ext directory:
+-plugin.moeboe.po = \
+  aQute.bnd.deployer.repository.FixedIndexedRepo; \
+    name        =       moeboe-po; \
+    locations   =       https://raw.githubusercontent.com/cboecking/com.chuboe.moeboe/master/cnf/release/index.xml
