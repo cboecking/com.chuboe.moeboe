@@ -20,7 +20,7 @@ public interface ProductREST {
 	interface ProductRequest extends RESTRequest {
 		ProductDTO _body();
 	}
-	ProductDTO postProduct(ProductRequest pr) throws Exception;
+	ProductDTO postProduct(ProductDTO product) throws Exception;
 
 	boolean deleteProduct(String _id) throws Exception;
 

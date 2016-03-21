@@ -35,7 +35,7 @@ public class ProductRESTImpl implements ProductREST, REST {
 	}
 
 	@Override
-	public ProductDTO postProduct(ProductRequest pr) throws Exception {
+	public ProductDTO postProduct(ProductDTO product) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
