@@ -59,8 +59,13 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 			cardinality=ReferenceCardinality.MULTIPLE,
 			policy=ReferencePolicy.DYNAMIC
 		)
-	void addRecordValidate(RecordValidate<T> rv) {
+	void addRecordValidate(RecordValidate<T> rv, Map<String,Object> config) {
 		//TODO: need to ask Peter how to get the validator's config/target so build
+		for(String key: config.keySet()) {
+			System.out.println("CHUCKSTEAK: " + key);
+		}
+		String validateType = (String) config.get(RecordValidate.RECORD_VALIDATE_CONFIG_NAME);
+		System.out.println("CHUCKSTEAK TYPE: " + validateType);
 		validators.add(rv);
 	}
 	

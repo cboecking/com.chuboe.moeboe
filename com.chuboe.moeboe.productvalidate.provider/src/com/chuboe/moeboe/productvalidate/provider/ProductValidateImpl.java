@@ -16,7 +16,7 @@ import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 @Component(
 		name = "com.chuboe.moeboe.productvalidate",
 		property = {
-				"validateDTO=ProductDTO" 
+				RecordValidate.RECORD_VALIDATE_CONFIG_NAME+"=ProductDTO" 
 		}
 	)
 public class ProductValidateImpl implements RecordValidate<ProductDTO> {
