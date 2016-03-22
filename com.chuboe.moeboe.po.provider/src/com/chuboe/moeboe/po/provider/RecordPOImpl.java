@@ -3,6 +3,7 @@ package com.chuboe.moeboe.po.provider;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.osgi.framework.BundleContext;
@@ -48,48 +49,59 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	@Reference
 	DTOs dtos;
 	
-	//begin -- list of validators
-	//TODO: Changeme: this should be a Map of Lists - each map key should be type of validator (Ex. ProductDTO)
-	//TODO: Changeme: this currently executes all validators regardless of the validator type. 
-	List<RecordValidate<T>> validators = new CopyOnWriteArrayList<>();
+	//begin -- maintain list of validators
+	Map<String, List<RecordValidate<T>>> validatorMap = new ConcurrentHashMap<>();
 	
 	//KP: (key point) reference or call on multiple services synchronously or in-line
+	//KP: How to get component configuration properties - add "Map<String,Object> config" as a parameter  
 	//KP: Whiteboard example - before save logic
 	@Reference(
 			cardinality=ReferenceCardinality.MULTIPLE,
 			policy=ReferencePolicy.DYNAMIC
 		)
 	void addRecordValidate(RecordValidate<T> rv, Map<String,Object> config) {
-		//TODO: need to ask Peter how to get the validator's config/target so build
-		for(String key: config.keySet()) {
-			System.out.println("CHUCKSTEAK: " + key);
+		String validateType = (String) config.get(RecordValidate.RECORD_VALIDATE_CONFIG_TYPE);
+		if(validatorMap.containsKey(validateType)){
+			validatorMap.get(validateType).add(rv);
 		}
-		String validateType = (String) config.get(RecordValidate.RECORD_VALIDATE_CONFIG_NAME);
-		System.out.println("CHUCKSTEAK TYPE: " + validateType);
-		validators.add(rv);
+		else{
+			List<RecordValidate<T>> validatorList = new CopyOnWriteArrayList<>();
+			validatorList.add(rv);
+			validatorMap.put(validateType, validatorList);
+		}
 	}
 	
-	void removeRecordValidate(RecordValidate<T> rv) {
-		validators.remove(rv);
+	void removeRecordValidate(RecordValidate<T> rv, Map<String,Object> config) {
+		String validateType = (String) config.get(RecordValidate.RECORD_VALIDATE_CONFIG_TYPE);
+		if(validatorMap.containsKey(validateType)){
+			validatorMap.get(validateType).remove(rv);
+			//check to see if the map entry is now empty - if so, remove it
+			if(validatorMap.get(validateType).isEmpty())
+				validatorMap.remove(validateType);
+		}
 	}
-	//end -- list of validators
+	//end -- maintain list of validators
 	
 	@Override
-	public T save(Class<T> clazz, String collection, T t) throws Exception {
-		Store<T> store = db.getStore(clazz, collection);
+	public T save(Class<T> clazz, String collectionName, T t) throws Exception {
+		Store<T> store = db.getStore(clazz, collectionName);
 		
 		log.log(LogService.LOG_DEBUG, "Entering RecordPO.save: "+t);
 		
 		clearValidationFields(t);
 		
 		//TODO: find record base validators - the ones that apply to all services
-		//code here
+		//TODO: code here
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after record base validators: "+t);
 		
 		//TODO; find service specific validators - see above validators notes about limiting...
-		for(RecordValidate<T> rv: validators) {
-			rv.validate(t, RECORDPO_ACTION_SAVE);
+		List<RecordValidate<T>> validatorList = validatorMap.get(collectionName);
+		if(validatorList != null) {
+			for(RecordValidate<T> rv: validatorList) {
+				log.log(LogService.LOG_DEBUG, "RecordPO.save calling validate on: "+rv.getClass().getName());
+				rv.validate(t, RECORDPO_ACTION_SAVE);
+			}
 		}
 		
 		log.log(LogService.LOG_DEBUG, "RecordPO.save after record validators: "+t);
@@ -99,7 +111,7 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		//find old version for change log comparison
 		T t_old;
 		if(t._id != null) {
-			t_old = find(clazz, collection, t._id);
+			t_old = find(clazz, collectionName, t._id);
 		} else {
 			t_old = null;
 		}
@@ -110,31 +122,33 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 		
 		//begin - post save events 
 
-		postActionEvent(RECORDPO_ACTION_SAVE, collection, t);
-		postChangeLogEvent(RECORDPO_CHANGE_LOG, collection, t, t_old);
+		postActionEvent(RECORDPO_ACTION_SAVE, collectionName, t);
+		postChangeLogEvent(RECORDPO_CHANGE_LOG, collectionName, t, t_old);
 		
 		//end - post save events
+		
+		log.log(LogService.LOG_DEBUG, "Entering RecordPO.save: "+t);
 		
 		return t;
 	}
 
 	@Override
-	public T find(Class<T> clazz, String collection, String _id) throws Exception {
-		Store<T> store = db.getStore(clazz, collection);
+	public T find(Class<T> clazz, String collectionName, String _id) throws Exception {
+		Store<T> store = db.getStore(clazz, collectionName);
 		if(store.find("_id="+_id).one().isPresent())
 			return store.find("_id="+_id).one().get();
 		return null;
 	}
 
 	@Override
-	public List<T> list(Class<T> clazz, String collection, String filter) throws Exception {
-		Store<T> store = db.getStore(clazz, collection);
+	public List<T> list(Class<T> clazz, String collectionName, String filter) throws Exception {
+		Store<T> store = db.getStore(clazz, collectionName);
 		return store.find((isFilterEmpty(filter)) ? "_id=*" : filter).collect();
 	}
 
 	@Override
-	public boolean delete(Class<T> clazz, String collection, String _id) throws Exception {
-		Store<T> store = db.getStore(clazz, collection);
+	public boolean delete(Class<T> clazz, String collectionName, String _id) throws Exception {
+		Store<T> store = db.getStore(clazz, collectionName);
 		
 		//TODO: need to store.find the record, clear validations, validate the delete action, act accordingly
 		//TODO: use configuration to determine if record can be deleted or just flagged as deleted
@@ -145,8 +159,8 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 	}
 
 	@Override
-	public int count(Class<T> clazz, String collection, String filter) throws Exception {
-		Store<T> store = db.getStore(clazz, collection);
+	public int count(Class<T> clazz, String collectionName, String filter) throws Exception {
+		Store<T> store = db.getStore(clazz, collectionName);
 		return store.find((isFilterEmpty(filter)) ? "_id=*" : filter).count();
 	}
 	
@@ -164,21 +178,21 @@ public class RecordPOImpl<T extends RecordDTO> implements RecordPO<T> {
 			t.isRecordValid=false;
 	}
 	
-	protected void postActionEvent(String event, String collection, T t) {
+	protected void postActionEvent(String event, String collectionName, T t) {
 		//KP: using Event Admin to fire an event - do not care if anyone is listening - asynchronous processing
 		Map<String, Object> actionProperties = new HashMap<>();
 
-		actionProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
+		actionProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collectionName);
 		actionProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
-		Event actionEvent = new Event(event+"/"+collection, actionProperties);
+		Event actionEvent = new Event(event+"/"+collectionName, actionProperties);
 		eventAdmin.postEvent(actionEvent);
 	}
 
-	protected void postChangeLogEvent(String event, String collection, T t, T t_old) {
+	protected void postChangeLogEvent(String event, String collectionName, T t, T t_old) {
 		Map<String, Object> changeLogProperties = new HashMap<>();
 
 		//TODO: check configuration to see if the collection wants a change log
-		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collection);
+		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_COLLECTION, collectionName);
 		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_OLD, t_old);
 		changeLogProperties.put(RECORDPO_EVENT_PROPERTY_DTO_NEW, t);
 		Event changeLogEvent = new Event(event, changeLogProperties);

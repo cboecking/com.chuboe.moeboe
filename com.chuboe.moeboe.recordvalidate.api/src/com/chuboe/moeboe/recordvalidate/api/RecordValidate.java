@@ -10,5 +10,6 @@ public interface RecordValidate<T> {
 	 */
 	T validate(T record, String recordPOAction);
 	
-	String RECORD_VALIDATE_CONFIG_NAME = "ValidateDTO";
+	String RECORD_VALIDATE_CONFIG_TYPE = "ValidateDTO";
+	String RECORD_VALIDATE_CONFIG_TYPE_BASE_RECORD_VALIDATE = "BaseRecordValidate";
 }

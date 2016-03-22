@@ -16,7 +16,7 @@ import com.chuboe.moeboe.recordvalidate.api.RecordValidate;
 @Component(
 		name = "com.chuboe.moeboe.productvalidate",
 		property = {
-				RecordValidate.RECORD_VALIDATE_CONFIG_NAME+"=ProductDTO" 
+				RecordValidate.RECORD_VALIDATE_CONFIG_TYPE+"=ProductDTO" 
 		}
 	)
 public class ProductValidateImpl implements RecordValidate<ProductDTO> {
@@ -35,7 +35,6 @@ public class ProductValidateImpl implements RecordValidate<ProductDTO> {
 		else {
 			product.recordValidation.add("No Action found!!");
 		}
-		
 		return product;
 	}
 
